@@ -1,0 +1,95 @@
+%
+clear
+close all
+clc
+
+%ator.m
+%Test
+x=randn(1,1500);
+h_org=[1 2 3 4 -5 6 -9 -19]';
+y=filter(h_org,1,x);
+
+[h,Emin]=WienerHopf(x,y,length(h_org)) %exakt längd på systemet
+
+figure
+t = tiledlayout(2,2);
+nexttile
+[A1,E1]=lms(x,y,0.1,length(h_org));
+plot(1:length(x),E1);
+xlabel('n')
+ylabel('Error')
+title('Error LMS')
+axis([0 length(x)-1 -5 5])
+
+nexttile
+[A2,E2]=nlms(x,y,0.1,length(h_org));
+plot(1:length(x),E2);
+xlabel('n')
+ylabel('Error')
+title('Error NLMS')
+axis([0 length(x)-1 -5 5])
+
+nexttile
+[A3,E3]=llms(x,y,0.1,0.00001,length(h_org));
+plot(1:length(x),E3);
+xlabel('n')
+ylabel('Error')
+title('Error LLMS')
+axis([0 length(x)-1 -5 5])
+
+figure
+plot(1:length(x),A1(:,1), 'b',1:length(x),h_org(1)*ones(1,length(x)),'--k',...
+    1:length(x),A1(:,2), 'r',1:length(x),h_org(2)*ones(1,length(x)),'--k', ...
+    1:length(x),A1(:,3), 'g',1:length(x),h_org(3)*ones(1,length(x)),'--k', ...
+    1:length(x),A1(:,4), 'c',1:length(x),h_org(4)*ones(1,length(x)),'--k', ...
+    1:length(x),A1(:,5), 'm',1:length(x),h_org(5)*ones(1,length(x)),'--k', ...
+    1:length(x),A1(:,6), 'r',1:length(x),h_org(6)*ones(1,length(x)),'--k', ...
+    1:length(x),A1(:,7), 'k',1:length(x),h_org(7)*ones(1,length(x)),'--k', ...
+    1:length(x),A1(:,8), 'r',1:length(x),h_org(8)*ones(1,length(x)),'--k');
+xlabel('n')
+ylabel('Correlation')
+title('Correlation LMS')
+axis([0 length(x)-1 -20 10])
+
+figure
+plot(1:length(x),A2(:,1), 'b',1:length(x),h_org(1)*ones(1,length(x)),'--k',...
+    1:length(x),A2(:,2), 'r',1:length(x),h_org(2)*ones(1,length(x)),'--k', ...
+    1:length(x),A2(:,3), 'g',1:length(x),h_org(3)*ones(1,length(x)),'--k', ...
+    1:length(x),A2(:,4), 'c',1:length(x),h_org(4)*ones(1,length(x)),'--k', ...
+    1:length(x),A2(:,5), 'm',1:length(x),h_org(5)*ones(1,length(x)),'--k', ...
+    1:length(x),A2(:,6), 'r',1:length(x),h_org(6)*ones(1,length(x)),'--k', ...
+    1:length(x),A2(:,7), 'k',1:length(x),h_org(7)*ones(1,length(x)),'--k', ...
+    1:length(x),A2(:,8), 'r',1:length(x),h_org(8)*ones(1,length(x)),'--k');
+xlabel('n')
+ylabel('Correlation')
+title('Correlation NLMS')
+axis([0 length(x)-1 -20 10])
+
+figure
+plot(1:length(x),A3(:,1), 'b',1:length(x),h_org(1)*ones(1,length(x)),'--k',...
+    1:length(x),A3(:,2), 'r',1:length(x),h_org(2)*ones(1,length(x)),'--k', ...
+    1:length(x),A3(:,3), 'g',1:length(x),h_org(3)*ones(1,length(x)),'--k', ...
+    1:length(x),A3(:,4), 'c',1:length(x),h_org(4)*ones(1,length(x)),'--k', ...
+    1:length(x),A3(:,5), 'm',1:length(x),h_org(5)*ones(1,length(x)),'--k', ...
+    1:length(x),A3(:,6), 'r',1:length(x),h_org(6)*ones(1,length(x)),'--k', ...
+    1:length(x),A3(:,7), 'k',1:length(x),h_org(7)*ones(1,length(x)),'--k', ...
+    1:length(x),A3(:,8), 'r',1:length(x),h_org(8)*ones(1,length(x)),'--k');
+xlabel('n')
+ylabel('Correlation')
+title('Correlation LLMS')
+axis([0 length(x)-1 -20 10])
+
+[h_org'; h']
+
+disp("LMS:")
+disp(A1(end, :))
+
+disp("NLMS:")
+disp(A2(end, :))
+
+disp("LLMS:")
+disp(A3(end, :))
+
+%Frekvenssvaret av filtret
+figure
+freqz(h,1,64)
